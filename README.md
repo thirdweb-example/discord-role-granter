@@ -1,4 +1,4 @@
-# Discord Bot Granter
+# Discord Role Granter
 
 This template uses the [authentication SDK](https://thirdweb.com/authentication)
 along with Discord OAuth to grant users who own an NFT from a specific collection a special role
