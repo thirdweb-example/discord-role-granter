@@ -28,9 +28,80 @@ npx thirdweb create --template discord-role-granter
 
 You can follow along with the guide below to set this up for your Discord server and role.
 
-To set up the Discord Bot you can follow our full guide at TODO.
+### Setting Up the Discord Bot
 
-Below, we'll explore the key pieces of the codebase.
+To create a Discord bot, head to the [Discord Developer Portal](https://discord.com/developers/applications) and click on `New Application`, give it a name and click `create`!
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378066493/uTAi0N7I-.png)
+
+Once it's created, head to the `Bot` tab, and click `Add Bot`.
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378135064/eGNkkLpf3.png)
+
+Give your bot a username, and I'm unchecking the `Public Bot` field so that only we can invite our bot.
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378382494/i5srin_Du.png)
+
+Scroll down to `Bot Permissions` and give our bot the `Manage Roles` permission:
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378279649/0SCOzdku8.png)
+
+Once you're ready, click `Save Changes`!
+
+Now we're ready to invite our bot to our server!
+
+Click `OAuth2` > `URL Generator` on the sidebar:
+
+Select `bot` and `Manage Roles` scopes.
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378764505/Q6hmuH8Ml.png)
+
+Copy the Generated URL and open it in your browser.
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378817253/bzEMllDkE.png)
+
+Select the server you want to add your bot to and click `Continue`. It will ask you to approve this bot's permissions, you should see a prompt to authorise the bot for `Manage Roles` permissions:
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378873543/clVZw5YdI.png)
+
+Click `Authorise`, once successful, you'll see an `Authorised` window. Your bot will be added to your server - say hi!
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658378948085/jchIC5F1o.png)
+
+Copy across your `Client ID` and `Client Secret` into environment variables in your project, by creating a `.env.local` file at the root of the directory.
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658380648801/1rp4zc2-a.png)
+
+```text
+CLIENT_ID=xxxxx
+CLIENT_SECRET=xxxxx
+```
+
+We also need to add a Redirect URL into our Application while we're here:
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658443956419/84fGElQk0.png)
+
+To grant a role to the connected user, we are going to use the Discord API on behalf of the bot that we created. Specifically, we'll be hitting the `Add Guild Member Role` API endpoint:
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658455468735/Pe6SJyvls.png)
+
+To make requests from our bot, we'll need a token to act on its behalf. To generate a token, head to the `Bot` tab from your Discord Developer portal, and click `Reset Token` on your bot:
+
+![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1658455558002/Y1ZUud12k.png)
+
+We then need to store this inside our environment variables as well securely:
+
+```text
+BOT_TOKEN=xxxx
+```
+
+Finally, inside the [grant-roles.ts](./pages/api/grant-role.ts) file, you need to configure your:
+
+- Discord Server ID
+- Role ID
+- NFT Collection ID
+
+You can learn how to do that from [this guide](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
 
 ### thirdweb and NextAuth Wrappers
 
