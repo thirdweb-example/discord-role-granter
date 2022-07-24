@@ -147,7 +147,6 @@ export default NextAuth({
     async jwt({ token, account }) {
       // Persist the user ID to the token right after signin
       if (account) {
-        console.log(account);
         token.userId = account.providerAccountId;
       }
       return token;
