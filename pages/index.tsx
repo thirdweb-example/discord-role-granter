@@ -13,7 +13,6 @@ const Home: NextPage = () => {
     // First, login and sign a message
     const domain = "thirdweb.com";
     const loginPayload = await sdk?.auth.login(domain);
-    console.log(loginPayload);
 
     // Then make a request to our API endpoint.
     try {
