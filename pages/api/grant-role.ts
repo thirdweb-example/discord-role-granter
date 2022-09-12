@@ -20,7 +20,7 @@ export default async function grantRole(
 
   // Authenticate login payload
   const sdk = new ThirdwebSDK("mumbai");
-  const domain = "thirdweb.com";
+  const domain = "example.com";
   // Verify the login payload is real and valid
   const verifiedWalletAddress = sdk.auth.verify(domain, loginPayload);
 

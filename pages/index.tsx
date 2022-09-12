@@ -11,7 +11,7 @@ const Home: NextPage = () => {
 
   async function requestGrantRole() {
     // First, login and sign a message
-    const domain = "thirdweb.com";
+    const domain = "example.com";
     const loginPayload = await sdk?.auth.login(domain);
 
     // Then make a request to our API endpoint.

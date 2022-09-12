@@ -182,7 +182,7 @@ First, we need to prove that the user owns the wallet by using the authenticatio
 
 ```tsx
 // First, login and sign a message
-const domain = "thirdweb.com";
+const domain = "example.com";
 const loginPayload = await sdk?.auth.login(domain);
 console.log(loginPayload);
 ```
@@ -212,7 +212,7 @@ try {
 const { loginPayload } = JSON.parse(req.body);
 // Authenticate login payload
 const sdk = new ThirdwebSDK("mumbai");
-const domain = "thirdweb.com";
+const domain = "example.com";
 // Verify the login payload is real and valid
 const verifiedWalletAddress = sdk.auth.verify(domain, loginPayload);
 ```
