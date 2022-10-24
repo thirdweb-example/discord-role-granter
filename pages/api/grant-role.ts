@@ -31,8 +31,9 @@ export default async function grantRole(
   }
 
   // Check if this user owns an NFT
-  const editionDrop = sdk.getEditionDrop(
-    "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF"
+  const editionDrop = await sdk.getContract(
+    "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF",
+    "edition-drop"
   );
 
   // Get addresses' balance of token ID 0
