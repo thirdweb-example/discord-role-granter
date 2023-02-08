@@ -9,7 +9,13 @@ const activeChainId = ChainId.Mumbai;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider desiredChainId={activeChainId}>
+    <ThirdwebProvider
+      desiredChainId={activeChainId}
+      authConfig={{
+        domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN!,
+        authUrl: "/api/thirdweb-auth",
+      }}
+    >
       <SessionProvider session={pageProps.session}>
         <Component {...pageProps} />
         <ThirdwebGuideFooter />

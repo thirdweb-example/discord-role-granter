@@ -3,6 +3,8 @@ import DiscordProvider from "next-auth/providers/discord";
 
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
+  secret: process.env.AUTH_SECRET,
+
   providers: [
     DiscordProvider({
       clientId: process.env.CLIENT_ID as string,
@@ -20,7 +22,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    
+
     async session({ session, token, user }) {
       // @ts-ignore
       session.userId = token.userId;
