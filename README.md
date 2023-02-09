@@ -113,7 +113,13 @@ const activeChainId = ChainId.Mumbai;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider desiredChainId={activeChainId}>
+    <ThirdwebProvider
+      desiredChainId={activeChainId}
+      authConfig={{
+        domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN!,
+        authUrl: "/api/thirdweb-auth",
+      }}
+    >
       <SessionProvider session={pageProps.session}>
         <Component {...pageProps} />
         <ThirdwebGuideFooter />
@@ -123,7 +129,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 ```
 
-This allows us to access the helpful hooks of the React SDK and NextAuth to read information about the current user and their wallet.
+This allows us to access the helpful hooks of the React SDK and NextAuth to read information about the current user and their wallet. We also configure authentication with the `authConfig` prop on the `ThirdwebProvider` component.
 
 ### Discord Oauth
 
@@ -135,6 +141,8 @@ information that is available to us so that we can read that inside our API rout
 ```tsx
 export default NextAuth({
   // Configure one or more authentication providers
+  secret: process.env.AUTH_SECRET,
+
   providers: [
     DiscordProvider({
       clientId: process.env.CLIENT_ID as string,
@@ -181,40 +189,47 @@ First, we need to prove that the user owns the wallet by using the authenticatio
 **Sign in with ethereum**:
 
 ```tsx
-// First, login and sign a message
-const domain = "example.com";
-const loginPayload = await sdk?.auth.login(domain);
-console.log(loginPayload);
-```
+const { isLoggedIn } = useUser();
+const login = useLogin();
 
-**Make the request to the API route with the login payload**
+if (!isLoggedIn) {
+  return (
+    <div className={`${styles.main}`}>
+      <h2 className={styles.noGapBottom}>Sign using your wallet</h2>
+      <p>
+        This proves that you really own the wallet that you've claimed to be
+        connected.
+      </p>
 
-```tsx
-// Then make a request to our API endpoint.
-try {
-  const response = await fetch("/api/grant-role", {
-    method: "POST",
-    body: JSON.stringify({
-      loginPayload,
-    }),
-  });
-  const data = await response.json();
-  console.log(data);
-  alert("Check the console for the response!");
-} catch (e) {
-  console.error(e);
+      <button
+        onClick={async () => {
+          await login.login();
+        }}
+        className={`${styles.mainButton} ${styles.spacerTop}`}
+      >
+        Sign message!
+      </button>
+    </div>
+  );
 }
 ```
 
-**Verify the login payload on the server**
+**Make the request to the API route**
 
 ```tsx
-const { loginPayload } = JSON.parse(req.body);
-// Authenticate login payload
-const sdk = new ThirdwebSDK("mumbai");
-const domain = "example.com";
-// Verify the login payload is real and valid
-const verifiedWalletAddress = sdk.auth.verify(domain, loginPayload);
+async function requestGrantRole() {
+  // Then make a request to our API endpoint.
+  try {
+    const response = await fetch("/api/grant-role", {
+      method: "POST",
+    });
+    const data = await response.json();
+    console.log(data);
+    alert("Check the console for the response!");
+  } catch (e) {
+    console.error(e);
+  }
+}
 ```
 
 ### Checking NFT Balance
@@ -223,8 +238,9 @@ Using the TypeScript SDK, we can check the balance of the wallet for a specific 
 
 ```tsx
 // Check if this user owns an NFT
-const editionDrop = sdk.getEditionDrop(
-  "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF"
+const editionDrop = sdk.getContract(
+  "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF",
+  "edition-drop"
 );
 
 // Get addresses' balance of token ID 0

@@ -1,35 +1,30 @@
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
+import { getUser } from "./thirdweb-auth/[...thirdweb]";
 
 export default async function grantRole(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get the login payload out of the request
-  console.log(req.body);
-  const { loginPayload } = JSON.parse(req.body);
+  // Get data from thirdweb auth, fail request if not signed in
+  const user = await getUser(req);
+
+  if (!user) {
+    return res.status(401).json({ error: "Wallet not authorized!" });
+  }
 
   // Get the Next Auth session so we can use the user ID as part of the discord API request
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     res.status(401).json({ error: "Not logged in" });
     return;
   }
 
-  // Authenticate login payload
+  // Initialise the SDK
   const sdk = new ThirdwebSDK("mumbai");
-  const domain = "example.com";
-  // Verify the login payload is real and valid
-  const verifiedWalletAddress = sdk.auth.verify(domain, loginPayload);
-
-  // If the login payload is not valid, return an error
-  if (!verifiedWalletAddress) {
-    res.status(401).json({ error: "Invalid login payload" });
-    return;
-  }
 
   // Check if this user owns an NFT
   const editionDrop = await sdk.getContract(
@@ -38,22 +33,23 @@ export default async function grantRole(
   );
 
   // Get addresses' balance of token ID 0
-  const balance = await editionDrop.balanceOf(verifiedWalletAddress, 0);
+  const balance = await editionDrop.balanceOf(user?.address!, 0);
 
-  if (balance.toNumber() === 0) {
+  if (balance.toNumber() > 0) {
     // If the user is verified and has an NFT, return the content
 
     // Make a request to the Discord API to get the servers this user is a part of
-    const discordServerId = "999533680663998485";
+    const discordServerId = "1072786066437849159";
 
     // @ts-ignore
     const { userId } = session;
 
-    console.log(userId)
+    console.log(userId);
 
-    
-    const roleId = "999851736028172298";
-    console.log(`https://discordapp.com/api/guilds/${discordServerId}/members/${userId}/roles/${roleId}`)
+    const roleId = "1072786664902103060";
+    console.log(
+      `https://discordapp.com/api/guilds/${discordServerId}/members/${userId}/roles/${roleId}`
+    );
     const response = await fetch(
       // Discord Developer Docs for this API Request: https://discord.com/developers/docs/resources/guild#add-guild-member-role
       `https://discordapp.com/api/guilds/${discordServerId}/members/${userId}/roles/${roleId}`,
