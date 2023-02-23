@@ -95,7 +95,7 @@ We then need to store this inside our environment variables as well securely:
 BOT_TOKEN=xxxx
 ```
 
-Finally, inside the [grant-roles.ts](./pages/api/grant-role.ts) file, you need to configure your:
+Finally, inside the [constants/index.ts](./constants/index.ts) file, you need to configure your:
 
 - Discord Server ID
 - Role ID

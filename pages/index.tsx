@@ -1,27 +1,33 @@
 import { useAddress, useUser } from "@thirdweb-dev/react";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import SignIn from "../components/SignIn";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   const address = useAddress();
   const { data: session } = useSession();
-  const { user, isLoggedIn } = useUser();
+  const { isLoggedIn } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  async function requestGrantRole() {
+  const requestGrantRole = async () => {
     // Then make a request to our API endpoint.
     try {
+      setLoading(true);
       const response = await fetch("/api/grant-role", {
         method: "POST",
       });
       const data = await response.json();
       console.log(data);
-      alert("Check the console for the response!");
+      setMessage(data.message || data.error);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>
@@ -31,10 +37,12 @@ const Home: NextPage = () => {
         {address && isLoggedIn && session && (
           <div className={styles.collectionContainer}>
             <button className={styles.mainButton} onClick={requestGrantRole}>
-              Give me the role!
+              {loading ? "Loading..." : "Give me the role"}
             </button>
           </div>
         )}
+
+        {message && <p>{message}</p>}
       </div>
     </div>
   );
