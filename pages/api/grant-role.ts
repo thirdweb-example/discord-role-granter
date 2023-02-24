@@ -1,6 +1,7 @@
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
+import { discordServerId, editionDropAddress, roleId } from "../../constants";
 import { authOptions } from "./auth/[...nextauth]";
 import { getUser } from "./thirdweb-auth/[...thirdweb]";
 
@@ -27,10 +28,7 @@ export default async function grantRole(
   const sdk = new ThirdwebSDK("mumbai");
 
   // Check if this user owns an NFT
-  const editionDrop = await sdk.getContract(
-    "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF",
-    "edition-drop"
-  );
+  const editionDrop = await sdk.getContract(editionDropAddress, "edition-drop");
 
   // Get addresses' balance of token ID 0
   const balance = await editionDrop.balanceOf(user?.address!, 0);
@@ -38,15 +36,11 @@ export default async function grantRole(
   if (balance.toNumber() > 0) {
     // If the user is verified and has an NFT, return the content
 
-    // Make a request to the Discord API to get the servers this user is a part of
-    const discordServerId = "1072786066437849159";
-
     // @ts-ignore
     const { userId } = session;
 
     console.log(userId);
 
-    const roleId = "1072786664902103060";
     console.log(
       `https://discordapp.com/api/guilds/${discordServerId}/members/${userId}/roles/${roleId}`
     );
