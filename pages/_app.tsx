@@ -4,13 +4,13 @@ import { SessionProvider } from "next-auth/react";
 import ThirdwebGuideFooter from "../components/ThirdwebGuideFooter";
 import "../styles/globals.css";
 
-// This is the chainId your dApp will work on.
-const activeChainId = ChainId.Mumbai;
+// This is the chain your dApp will work on.
+const activeChain = "mumbai";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThirdwebProvider
-      desiredChainId={activeChainId}
+      activeChain={activeChain}
       authConfig={{
         domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN!,
         authUrl: "/api/thirdweb-auth",

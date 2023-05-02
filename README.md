@@ -108,13 +108,13 @@ You can learn how to do that from [this guide](https://support.discord.com/hc/en
 To authenticate users with both their **wallet** and their Discord account, we wrap our application in two Provider components:
 
 ```tsx
-// This is the chainId your dApp will work on.
-const activeChainId = ChainId.Mumbai;
+// This is the chain your dApp will work on.
+const activeChain = "mumbai";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThirdwebProvider
-      desiredChainId={activeChainId}
+      desiredChain={activeChain}
       authConfig={{
         domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN!,
         authUrl: "/api/thirdweb-auth",
