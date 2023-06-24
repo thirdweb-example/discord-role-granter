@@ -31,7 +31,7 @@ export default function SignIn() {
       <div className={styles.main}>
         <h2 className={styles.noGapBottom}>Connect Your Wallet</h2>
         <p>Connect your wallet to check eligibility.</p>
-        <ConnectWallet accentColor="#F213A4" colorMode="dark" />
+        <ConnectWallet theme="dark" />
       </div>
     );
   }
